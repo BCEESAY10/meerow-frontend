@@ -1,15 +1,20 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../common/Button";
 
 export const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout, toggleTheme, themeMode } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
+  };
+
+  const isActive = (path: string): boolean => {
+    return location.pathname === path;
   };
 
   return (
@@ -28,20 +33,32 @@ export const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-6">
             <Link
               to="/"
-              className="text-[#1E1E2E] dark:text-[#FDF6EE] hover:text-[#E8622A] dark:hover:text-[#F07A3D] transition cursor-pointer">
+              className={`${
+                isActive("/")
+                  ? "text-[#E8622A] dark:text-[#F07A3D] font-semibold border-b-2 border-[#E8622A] dark:border-[#F07A3D] pb-1"
+                  : "text-[#1E1E2E] dark:text-[#FDF6EE] hover:text-[#E8622A] dark:hover:text-[#F07A3D]"
+              } transition cursor-pointer`}>
               Home
             </Link>
             {isAuthenticated && (
               <>
                 <Link
                   to="/author-dashboard"
-                  className="text-[#1E1E2E] dark:text-[#FDF6EE] hover:text-[#E8622A] dark:hover:text-[#F07A3D] transition cursor-pointer">
+                  className={`${
+                    isActive("/author-dashboard")
+                      ? "text-[#E8622A] dark:text-[#F07A3D] font-semibold border-b-2 border-[#E8622A] dark:border-[#F07A3D] pb-1"
+                      : "text-[#1E1E2E] dark:text-[#FDF6EE] hover:text-[#E8622A] dark:hover:text-[#F07A3D]"
+                  } transition cursor-pointer`}>
                   My Stories
                 </Link>
                 {user?.role === "admin" && (
                   <Link
                     to="/admin/queue"
-                    className="text-[#1E1E2E] dark:text-[#FDF6EE] hover:text-[#E8622A] dark:hover:text-[#F07A3D] transition cursor-pointer">
+                    className={`${
+                      isActive("/admin/queue")
+                        ? "text-[#E8622A] dark:text-[#F07A3D] font-semibold border-b-2 border-[#E8622A] dark:border-[#F07A3D] pb-1"
+                        : "text-[#1E1E2E] dark:text-[#FDF6EE] hover:text-[#E8622A] dark:hover:text-[#F07A3D]"
+                    } transition cursor-pointer`}>
                     Admin
                   </Link>
                 )}
