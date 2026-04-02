@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import apiClient from "./api";
 import type { ApiResponse, PaginatedResponse } from "../types/api.types";
 
