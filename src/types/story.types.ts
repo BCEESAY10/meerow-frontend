@@ -1,14 +1,21 @@
+import type { User } from "./user.types";
+import type { Episode } from "./episode.types";
+
 export type StoryStatus = "pending" | "approved" | "rejected";
 export type Genre =
-  | "fantasy"
-  | "romance"
-  | "thriller"
-  | "sci-fi"
-  | "drama"
-  | "mystery"
-  | "horror"
-  | "historical"
-  | "other";
+  | "Fantasy"
+  | "Science Fiction"
+  | "Romance"
+  | "Thriller"
+  | "Horror"
+  | "Mystery"
+  | "Adventure"
+  | "Historical Fiction"
+  | "Drama"
+  | "Comedy"
+  | "Slice of Life"
+  | "Poetry"
+  | "Other";
 
 export interface Story {
   id: string;
@@ -27,4 +34,11 @@ export interface Story {
   published_at?: string;
   created_at: string;
   updated_at: string;
+  author?: User;
+  episodes?: Episode[];
+  _count?: {
+    episodes?: number;
+    likes?: number;
+    comments?: number;
+  };
 }

@@ -1,27 +1,35 @@
 import type { Genre } from "../types/story.types";
 
 export const GENRES: Record<Genre, string> = {
-  fantasy: "Fantasy",
-  romance: "Romance",
-  thriller: "Thriller",
-  "sci-fi": "Sci-Fi",
-  drama: "Drama",
-  mystery: "Mystery",
-  horror: "Horror",
-  historical: "Historical",
-  other: "Other",
+  Fantasy: "Fantasy",
+  "Science Fiction": "Science Fiction",
+  Romance: "Romance",
+  Thriller: "Thriller",
+  Horror: "Horror",
+  Mystery: "Mystery",
+  Adventure: "Adventure",
+  "Historical Fiction": "Historical Fiction",
+  Drama: "Drama",
+  Comedy: "Comedy",
+  "Slice of Life": "Slice of Life",
+  Poetry: "Poetry",
+  Other: "Other",
 };
 
 export const GENRE_LIST: Genre[] = [
-  "fantasy",
-  "romance",
-  "thriller",
-  "sci-fi",
-  "drama",
-  "mystery",
-  "horror",
-  "historical",
-  "other",
+  "Fantasy",
+  "Science Fiction",
+  "Romance",
+  "Thriller",
+  "Horror",
+  "Mystery",
+  "Adventure",
+  "Historical Fiction",
+  "Drama",
+  "Comedy",
+  "Slice of Life",
+  "Poetry",
+  "Other",
 ];
 
 export const API_BASE_URL =
