@@ -1,3 +1,5 @@
+import type { User } from "./user.types";
+
 export type ContentType = "story" | "episode";
 
 export interface Comment {
@@ -8,4 +10,5 @@ export interface Comment {
   body: string;
   created_at: string;
   updated_at: string;
+  user?: User;
 }

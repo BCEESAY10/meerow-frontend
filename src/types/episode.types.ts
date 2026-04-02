@@ -1,3 +1,5 @@
+import type { Story } from "./story.types";
+
 export type EpisodeStatus = "pending" | "approved" | "rejected";
 
 export interface Episode {
@@ -14,4 +16,9 @@ export interface Episode {
   published_at?: string;
   created_at: string;
   updated_at: string;
+  story?: Story;
+  _count?: {
+    likes?: number;
+    comments?: number;
+  };
 }
