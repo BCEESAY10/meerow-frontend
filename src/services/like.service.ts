@@ -36,6 +36,39 @@ export const likeService = {
     });
     return response.data;
   },
+
+  /**
+   * Get like count for content
+   */
+  async getLikeCount(
+    contentId: string,
+    contentType: "story" | "episode",
+  ): Promise<ApiResponse<{ count: number }>> {
+    const response = await apiClient.get<ApiResponse<{ count: number }>>(
+      "/likes/count",
+      {
+        params: { content_id: contentId, content_type: contentType },
+      },
+    );
+    return response.data;
+  },
+
+  /**
+   * Get users who liked content (paginated)
+   */
+  async getLikes(
+    contentId: string,
+    contentType: "story" | "episode",
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<ApiResponse<{ likes: Like[]; total: number }>> {
+    const response = await apiClient.get<
+      ApiResponse<{ likes: Like[]; total: number }>
+    >("/likes", {
+      params: { content_id: contentId, content_type: contentType, page, limit },
+    });
+    return response.data;
+  },
 };
 
 export default likeService;
