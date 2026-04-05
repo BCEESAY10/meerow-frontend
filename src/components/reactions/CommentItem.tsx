@@ -24,6 +24,12 @@ export const CommentItem: React.FC<CommentItemProps> = ({
 
   const isAuthor = user?.id === comment.user_id;
 
+  // Check if comment was edited
+  const wasEdited =
+    comment.updated_at &&
+    new Date(comment.updated_at).getTime() >
+      new Date(comment.created_at).getTime() + 1000; // 1 second tolerance
+
   const handleDelete = async () => {
     setError(null);
     setIsDeleting(true);
@@ -54,9 +60,16 @@ export const CommentItem: React.FC<CommentItemProps> = ({
                 <p className="font-medium text-[#1E1E2E] dark:text-[#FDF6EE] text-sm">
                   {comment.user.name}
                 </p>
-                <p className="text-xs text-[#6B6B7D] dark:text-[#B8B8C8]">
-                  {formatRelativeTime(comment.created_at)}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs text-[#6B6B7D] dark:text-[#B8B8C8]">
+                    {formatRelativeTime(comment.created_at)}
+                  </p>
+                  {wasEdited && (
+                    <p className="text-xs text-[#6B6B7D] dark:text-[#B8B8C8] italic">
+                      (edited {formatRelativeTime(comment.updated_at)})
+                    </p>
+                  )}
+                </div>
               </div>
             </>
           )}
