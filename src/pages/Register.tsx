@@ -120,6 +120,7 @@ export const Register: React.FC = () => {
               label="Password"
               type="password"
               placeholder="••••••••"
+              showPasswordToggle
               {...register("password")}
               error={errors.password?.message}
               helperText="At least 6 characters"
@@ -129,6 +130,7 @@ export const Register: React.FC = () => {
               label="Confirm Password"
               type="password"
               placeholder="••••••••"
+              showPasswordToggle
               {...register("confirmPassword")}
               error={errors.confirmPassword?.message}
             />
