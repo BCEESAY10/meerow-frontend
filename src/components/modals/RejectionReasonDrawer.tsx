@@ -40,9 +40,7 @@ export const RejectionReasonDrawer: React.FC<RejectionReasonDrawerProps> = ({
           <h2 className="text-2xl font-bold text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
             {title}
           </h2>
-          <p className="text-[#6B6B7D] dark:text-[#B8B8C8] text-sm">
-            {genre}
-          </p>
+          <p className="text-[#6B6B7D] dark:text-[#B8B8C8] text-sm">{genre}</p>
         </div>
 
         {/* Rejection Reason */}
@@ -61,15 +59,13 @@ export const RejectionReasonDrawer: React.FC<RejectionReasonDrawerProps> = ({
         <div className="bg-gray-50 dark:bg-[#2A2A3E] p-4 rounded mb-8">
           <p className="text-sm text-[#6B6B7D] dark:text-[#B8B8C8]">
             Your story was not approved during moderation review. Please review
-            the feedback above and consider making revisions before resubmitting.
+            the feedback above and consider making revisions before
+            resubmitting.
           </p>
         </div>
 
         {/* Action Button */}
-        <Button
-          variant="primary"
-          onClick={onClose}
-          className="w-full">
+        <Button variant="primary" onClick={onClose} className="w-full">
           Done
         </Button>
       </div>

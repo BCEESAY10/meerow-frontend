@@ -88,7 +88,7 @@ export const AuthorDashboard: React.FC = () => {
   const handleViewRejectionReason = (
     title: string,
     genre: string,
-    rejectionReason?: string
+    rejectionReason?: string,
   ) => {
     if (rejectionReason) {
       setSelectedRejectedStory({ title, genre, rejectionReason });
@@ -192,20 +192,21 @@ export const AuthorDashboard: React.FC = () => {
                             Edit
                           </Button>
 
-                          {story.status === "rejected" && story.rejection_reason && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                handleViewRejectionReason(
-                                  story.title,
-                                  story.genre,
-                                  story.rejection_reason
-                                )
-                              }>
-                              View Reason
-                            </Button>
-                          )}
+                          {story.status === "rejected" &&
+                            story.rejection_reason && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleViewRejectionReason(
+                                    story.title,
+                                    story.genre,
+                                    story.rejection_reason,
+                                  )
+                                }>
+                                View Reason
+                              </Button>
+                            )}
 
                           {story.is_episodic && story.status === "approved" && (
                             <Button
