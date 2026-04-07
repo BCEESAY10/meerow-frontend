@@ -14,6 +14,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import { AuthorDashboard } from "../pages/AuthorDashboard";
 import { WriteStory } from "../pages/WriteStory";
+import { EditStory } from "../pages/EditStory";
 import { WriteEpisode } from "../pages/WriteEpisode";
 import { StoryDetail } from "../pages/StoryDetail";
 import { EpisodeDetail } from "../pages/EpisodeDetail";
@@ -48,6 +49,15 @@ export const AppRoutes: React.FC = () => {
           element={
             <ProtectedRoute>
               <WriteStory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/story/:storyId/edit"
+          element={
+            <ProtectedRoute>
+              <EditStory />
             </ProtectedRoute>
           }
         />
