@@ -8,6 +8,7 @@ import { Badge } from "../components/common/Badge";
 import { EmptyState } from "../components/common/EmptyState";
 import { ErrorMessage } from "../components/common/ErrorMessage";
 import { ConfirmDrawer } from "../components/modals/ConfirmDrawer";
+import { RejectionReasonDrawer } from "../components/modals/RejectionReasonDrawer";
 import { useAuth } from "../hooks/useAuth";
 import { useUserStories, useDeleteStory } from "../hooks/useStories";
 import { formatRelativeTime } from "../utils/formatDate";
@@ -19,6 +20,11 @@ export const AuthorDashboard: React.FC = () => {
   const deleteStoryMutation = useDeleteStory();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [storyToDelete, setStoryToDelete] = useState<string | null>(null);
+  const [selectedRejectedStory, setSelectedRejectedStory] = useState<{
+    title: string;
+    genre: string;
+    rejectionReason: string;
+  } | null>(null);
 
   if (!user) {
     return (
@@ -76,6 +82,16 @@ export const AuthorDashboard: React.FC = () => {
         return <Badge variant="danger">Rejected</Badge>;
       default:
         return <Badge variant="info">{status}</Badge>;
+    }
+  };
+
+  const handleViewRejectionReason = (
+    title: string,
+    genre: string,
+    rejectionReason?: string
+  ) => {
+    if (rejectionReason) {
+      setSelectedRejectedStory({ title, genre, rejectionReason });
     }
   };
 
@@ -176,6 +192,21 @@ export const AuthorDashboard: React.FC = () => {
                             Edit
                           </Button>
 
+                          {story.status === "rejected" && story.rejection_reason && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleViewRejectionReason(
+                                  story.title,
+                                  story.genre,
+                                  story.rejection_reason
+                                )
+                              }>
+                              View Reason
+                            </Button>
+                          )}
+
                           {story.is_episodic && story.status === "approved" && (
                             <Button
                               variant="secondary"
@@ -213,8 +244,16 @@ export const AuthorDashboard: React.FC = () => {
           />
         )}
 
-        {/* Rejection Reason Modal */}
-        {/* TODO: Implement RejectionReasonDrawer component for rejected stories */}
+        {/* Rejection Reason Drawer */}
+        {selectedRejectedStory && (
+          <RejectionReasonDrawer
+            isOpen={selectedRejectedStory !== null}
+            title={selectedRejectedStory.title}
+            genre={selectedRejectedStory.genre}
+            rejectionReason={selectedRejectedStory.rejectionReason}
+            onClose={() => setSelectedRejectedStory(null)}
+          />
+        )}
       </div>
 
       {/* Delete Confirmation Drawer */}
