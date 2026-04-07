@@ -17,8 +17,8 @@ import { WriteStory } from "../pages/WriteStory";
 import { WriteEpisode } from "../pages/WriteEpisode";
 import { StoryDetail } from "../pages/StoryDetail";
 import { EpisodeDetail } from "../pages/EpisodeDetail";
-// import AdminQueue from '../pages/admin/AdminQueue';
-// import AdminReview from '../pages/admin/AdminReview';
+import AdminQueue from "../pages/admin/AdminQueue";
+import AdminReview from "../pages/admin/AdminReview";
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -66,7 +66,16 @@ export const AppRoutes: React.FC = () => {
           path="/admin/queue"
           element={
             <AdminRoute>
-              <div className="p-8">Admin Queue (Coming Soon)</div>
+              <AdminQueue />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/review/:type/:id"
+          element={
+            <AdminRoute>
+              <AdminReview />
             </AdminRoute>
           }
         />
