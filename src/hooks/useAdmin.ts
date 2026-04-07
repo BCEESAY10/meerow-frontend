@@ -61,3 +61,28 @@ export const useRejectContent = () => {
     },
   });
 };
+
+/**
+ * Hook to update content as admin (for editing before approval)
+ */
+export const useAdminUpdateContent = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {
+      type: "story" | "episode";
+      id: string;
+      updates: Record<string, string | boolean>;
+    }) => {
+      // Use the story service update endpoint for both stories and episodes
+      return import("../services/story.service").then((module) =>
+        module.default.updateStory(data.id, data.updates),
+      );
+    },
+    onSuccess: () => {
+      // Invalidate queue and specific item queries
+      queryClient.invalidateQueries({ queryKey: ["adminQueue"] });
+      queryClient.invalidateQueries({ queryKey: ["queueItem"] });
+    },
+  });
+};
