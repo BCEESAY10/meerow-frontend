@@ -7,6 +7,7 @@ import { Spinner } from "../components/common/Spinner";
 import { Badge } from "../components/common/Badge";
 import { EmptyState } from "../components/common/EmptyState";
 import { ErrorMessage } from "../components/common/ErrorMessage";
+import { ConfirmDrawer } from "../components/modals/ConfirmDrawer";
 import { useAuth } from "../hooks/useAuth";
 import { useUserStories, useDeleteStory } from "../hooks/useStories";
 import { formatRelativeTime } from "../utils/formatDate";
@@ -216,37 +217,18 @@ export const AuthorDashboard: React.FC = () => {
         {/* TODO: Implement RejectionReasonDrawer component for rejected stories */}
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {storyToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-[#1E1E2E] rounded-lg p-8 max-w-sm mx-4">
-            <h3 className="text-xl font-bold text-[#1E1E2E] dark:text-[#FDF6EE] mb-4">
-              Delete Story?
-            </h3>
-            <p className="text-[#6B6B7D] dark:text-[#B8B8C8] mb-6">
-              This action cannot be undone. All episodes and comments will be
-              permanently deleted.
-            </p>
-
-            <div className="flex gap-4">
-              <Button
-                variant="outline"
-                onClick={() => setStoryToDelete(null)}
-                className="flex-1">
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => handleDeleteStory(storyToDelete)}
-                loading={deleteStoryMutation.isPending}
-                disabled={deleteStoryMutation.isPending}
-                className="flex-1">
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Delete Confirmation Drawer */}
+      <ConfirmDrawer
+        isOpen={storyToDelete !== null}
+        title="Delete Story?"
+        description="This action cannot be undone. All episodes and comments will be permanently deleted."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={deleteStoryMutation.isPending}
+        onConfirm={() => storyToDelete && handleDeleteStory(storyToDelete)}
+        onCancel={() => setStoryToDelete(null)}
+      />
     </PageWrapper>
   );
 };
