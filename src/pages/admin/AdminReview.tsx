@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   useQueueItem,
   useApproveContent,
   useRejectContent,
+  useAdminUpdateContent,
 } from "../../hooks/useAdmin";
 import { Spinner } from "../../components/common/Spinner";
 import { Button } from "../../components/common/Button";
+import { Input } from "../../components/common/Input";
 import { PageWrapper } from "../../components/layout/PageWrapper";
 import { Badge } from "../../components/common/Badge";
 import { ErrorMessage } from "../../components/common/ErrorMessage";
@@ -20,15 +22,97 @@ export const AdminReview: React.FC = () => {
   const { type, id } = useParams<{ type: "story" | "episode"; id: string }>();
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useQueueItem(type, id);
+  const { data, isLoading, error, refetch } = useQueueItem(type, id);
   const approveContent = useApproveContent();
   const rejectContent = useRejectContent();
+  const updateContent = useAdminUpdateContent();
 
   const [rejectionReason, setRejectionReason] = useState("");
   const [rejectionError, setRejectionError] = useState<string | null>(null);
   const [showRejectForm, setShowRejectForm] = useState(false);
 
+  // Edit state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editSynopsis, setEditSynopsis] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+
   const queueItem = data?.data;
+
+  // Initialize edit fields when queue item loads
+  const initializeEditFields = useCallback(() => {
+    if (queueItem && !isEditing) {
+      setEditTitle(queueItem.title);
+      setEditSynopsis((queueItem as any).synopsis || "");
+      setEditContent(queueItem.content);
+    }
+  }, [queueItem, isEditing]);
+
+  useEffect(() => {
+    // eslint-disable-next-line
+    initializeEditFields();
+  }, [initializeEditFields]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditError(null);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditError(null);
+    // Reset to current values
+    if (queueItem) {
+      setEditTitle(queueItem.title);
+      setEditSynopsis((queueItem as any).synopsis || "");
+      setEditContent(queueItem.content);
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    setEditError(null);
+
+    // Validation
+    if (!editTitle.trim()) {
+      setEditError("Title is required");
+      return;
+    }
+
+    if (editTitle.trim().length < 3) {
+      setEditError("Title must be at least 3 characters");
+      return;
+    }
+
+    if (!editContent.trim()) {
+      setEditError("Content is required");
+      return;
+    }
+
+    if (!type || !id) return;
+
+    try {
+      const updates: any = {
+        title: editTitle.trim(),
+        content: editContent.trim(),
+      };
+
+      if (editSynopsis) {
+        updates.synopsis = editSynopsis.trim();
+      }
+
+      await updateContent.mutateAsync({
+        type,
+        id,
+        updates,
+      });
+
+      setIsEditing(false);
+      await refetch();
+    } catch (err: any) {
+      setEditError(err.response?.data?.message || "Failed to save changes");
+    }
+  };
 
   const handleApprove = async () => {
     if (!type || !id) return;
@@ -219,9 +303,92 @@ export const AdminReview: React.FC = () => {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons & Forms */}
             <div className="space-y-4">
-              {!showRejectForm && (
+              {/* Edit Form */}
+              {isEditing && (
+                <form className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 space-y-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-[#1E1E2E] dark:text-[#FDF6EE]">
+                      Edit Content
+                    </h3>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      Make corrections before approving
+                    </p>
+                  </div>
+
+                  {/* Title */}
+                  <Input
+                    label="Title"
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="Enter title"
+                    error={editError?.includes("Title") ? editError : undefined}
+                  />
+
+                  {/* Synopsis (if story) */}
+                  {type === "story" && (
+                    <div>
+                      <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
+                        Synopsis
+                      </label>
+                      <textarea
+                        value={editSynopsis}
+                        onChange={(e) => setEditSynopsis(e.target.value)}
+                        placeholder="Brief description (optional)"
+                        rows={2}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#1E1E2E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                      />
+                    </div>
+                  )}
+
+                  {/* Content */}
+                  <div>
+                    <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
+                      Content
+                    </label>
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      placeholder="Story content"
+                      rows={8}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#1E1E2E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    />
+                  </div>
+
+                  {editError && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                      <p className="text-sm text-red-800 dark:text-red-200">
+                        {editError}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      type="button"
+                      variant="primary"
+                      onClick={handleSaveEdit}
+                      loading={updateContent.isPending}
+                      disabled={updateContent.isPending}
+                      className="flex-1">
+                      Save Changes
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleCancelEdit}
+                      disabled={updateContent.isPending}
+                      className="flex-1">
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              )}
+
+              {/* Approval/Rejection/Edit Buttons */}
+              {!isEditing && !showRejectForm && (
                 <div className="flex gap-4">
                   <Button
                     variant="primary"
@@ -239,6 +406,14 @@ export const AdminReview: React.FC = () => {
                       approveContent.isPending || rejectContent.isPending
                     }
                     text="Reject Content"
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={handleEdit}
+                    disabled={
+                      approveContent.isPending || rejectContent.isPending
+                    }
+                    text="Edit"
                   />
                 </div>
               )}
