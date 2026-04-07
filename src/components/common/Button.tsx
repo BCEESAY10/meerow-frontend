@@ -1,10 +1,11 @@
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "danger";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  text?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -13,6 +14,7 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   disabled,
   children,
+  text,
   className = "",
   ...props
 }) => {
@@ -26,6 +28,8 @@ export const Button: React.FC<ButtonProps> = ({
       "bg-[#1E1E2E] text-white hover:bg-[#0F0F1E] active:scale-95 focus:ring-[#1E1E2E] dark:bg-[#3A3A52] dark:hover:bg-[#1E1E2E] dark:text-[#FDF6EE] dark:focus:ring-[#3A3A52]",
     outline:
       "border-2 border-[#E8622A] text-[#E8622A] hover:bg-[#E8622A] hover:text-white active:scale-95 focus:ring-[#E8622A] dark:border-[#F07A3D] dark:text-[#F07A3D] dark:hover:bg-[#F07A3D] dark:hover:text-[#1E1E2E] dark:focus:ring-[#F07A3D]",
+    danger:
+      "bg-red-600 text-white hover:bg-red-700 active:scale-95 focus:ring-red-600 dark:bg-red-700 dark:hover:bg-red-800 dark:focus:ring-red-700",
   };
 
   const sizeStyles = {
@@ -43,7 +47,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={fullClassName}
       type={props.type || "button"}>
       {loading && <span className="inline-block animate-spin">⏳</span>}
-      {children}
+      {text || children}
     </button>
   );
 };
