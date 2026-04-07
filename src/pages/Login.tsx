@@ -98,6 +98,7 @@ export const Login: React.FC = () => {
               label="Password"
               type="password"
               placeholder="••••••••"
+              showPasswordToggle
               {...register("password")}
               error={errors.password?.message}
             />
