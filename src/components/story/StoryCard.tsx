@@ -4,6 +4,14 @@ import type { Story } from "../../types/story.types";
 import { Badge } from "../common/Badge";
 import { formatRelativeTime } from "../../utils/formatDate";
 
+// Helper function to format story date
+const getStoryDateText = (story: Story): string => {
+  if (story.status === "approved" && story.published_at) {
+    return `Published ${formatRelativeTime(story.published_at)}`;
+  }
+  return `Created ${formatRelativeTime(story.created_at)}`;
+};
+
 interface StoryCardProps {
   story: Story;
 }
@@ -53,7 +61,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
               {story.author.name}
             </p>
             <p className="text-xs text-[#6B6B7D] dark:text-[#B8B8C8]">
-              {formatRelativeTime(story.created_at)}
+              {getStoryDateText(story)}
             </p>
           </div>
         </div>

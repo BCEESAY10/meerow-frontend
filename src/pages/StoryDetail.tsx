@@ -112,7 +112,9 @@ export const StoryDetail: React.FC = () => {
                     {story.author.name}
                   </p>
                   <p className="text-sm text-[#6B6B7D] dark:text-[#B8B8C8]">
-                    Published {formatRelativeTime(story.created_at)}
+                    {story.status === "approved" && story.published_at
+                      ? `Published ${formatRelativeTime(story.published_at)}`
+                      : `Created ${formatRelativeTime(story.created_at)}`}
                   </p>
                 </div>
               </div>
