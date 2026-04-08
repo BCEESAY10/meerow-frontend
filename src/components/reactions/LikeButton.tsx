@@ -50,8 +50,19 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
         setLikeCount((prev) => prev + 1);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to update like");
-      // Revert state on error
+      const errorMessage =
+        err.response?.data?.message || "Failed to update like";
+
+      // If error is "already liked", set isLiked to true (fix the desync)
+      if (errorMessage.toLowerCase().includes("already liked")) {
+        setIsLiked(true);
+        // Clear the error after a moment since this is actually resolved
+        setTimeout(() => setError(null), 2000);
+        return;
+      }
+
+      // For other errors, show the error and revert the state
+      setError(errorMessage);
       setIsLiked(!isLiked);
       setLikeCount(isLiked ? likeCount + 1 : Math.max(0, likeCount - 1));
     }
