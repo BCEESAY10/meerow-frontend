@@ -64,7 +64,9 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
       // For other errors, show the error and revert the state
       setError(errorMessage);
       setIsLiked(!isLiked);
-      setCurrentLikeCount(isLiked ? currentLikeCount + 1 : Math.max(0, currentLikeCount - 1));
+      setCurrentLikeCount(
+        isLiked ? currentLikeCount + 1 : Math.max(0, currentLikeCount - 1),
+      );
     }
   };
 

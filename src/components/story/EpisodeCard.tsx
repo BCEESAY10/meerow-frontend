@@ -40,7 +40,7 @@ export const EpisodeCard: React.FC<EpisodeCardProps> = ({ episode }) => {
           </div>
 
           {/* Stats */}
-          {episode._count ?? episode.likeCount !== undefined ? (
+          {(episode._count ?? episode.likeCount !== undefined) ? (
             <div className="flex gap-3 mt-3 text-xs text-[#6B6B7D] dark:text-[#B8B8C8]">
               <span className="flex items-center gap-1">
                 <svg
