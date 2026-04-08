@@ -16,6 +16,8 @@ export interface Episode {
   published_at?: string;
   created_at: string;
   updated_at: string;
+  likeCount?: number;
+  userHasLiked?: boolean | null;
   story?: Story;
   _count?: {
     likes?: number;

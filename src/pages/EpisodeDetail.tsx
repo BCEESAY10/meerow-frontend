@@ -214,7 +214,8 @@ export const EpisodeDetail: React.FC = () => {
             <LikeButton
               contentId={episode.id}
               contentType="episode"
-              initialCount={episode._count?.likes || 0}
+              likeCount={episode.likeCount ?? episode._count?.likes ?? 0}
+              userHasLiked={episode.userHasLiked}
             />
           </div>
 

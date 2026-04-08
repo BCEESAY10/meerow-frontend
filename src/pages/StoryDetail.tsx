@@ -295,7 +295,8 @@ export const StoryDetail: React.FC = () => {
             <LikeButton
               contentId={story.id}
               contentType="story"
-              initialCount={story._count?.likes || 0}
+              likeCount={story.likeCount ?? story._count?.likes ?? 0}
+              userHasLiked={story.userHasLiked}
             />
           </div>
 

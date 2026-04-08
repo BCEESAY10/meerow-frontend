@@ -6,22 +6,22 @@ import { useAuth } from "../../hooks/useAuth";
 interface LikeButtonProps {
   contentId: string;
   contentType: "story" | "episode" | "comment";
-  initialLiked?: boolean;
-  initialCount?: number;
+  likeCount?: number;
+  userHasLiked?: boolean | null;
 }
 
 export const LikeButton: React.FC<LikeButtonProps> = ({
   contentId,
   contentType,
-  initialLiked = false,
-  initialCount = 0,
+  likeCount = 0,
+  userHasLiked = null,
 }) => {
   const { user } = useAuth();
   const likeType = contentType === "comment" ? "story" : contentType;
   const likeMutation = useLike(likeType as "story" | "episode");
   const unlikeMutation = useUnlike(likeType as "story" | "episode");
-  const [isLiked, setIsLiked] = useState(initialLiked);
-  const [likeCount, setLikeCount] = useState(initialCount);
+  const [isLiked, setIsLiked] = useState(userHasLiked ?? false);
+  const [currentLikeCount, setCurrentLikeCount] = useState(likeCount);
   const [error, setError] = useState<string | null>(null);
 
   const isLoading = likeMutation.isPending || unlikeMutation.isPending;
@@ -42,12 +42,12 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
         // Unlike
         await unlikeMutation.mutateAsync(contentId);
         setIsLiked(false);
-        setLikeCount((prev) => Math.max(0, prev - 1));
+        setCurrentLikeCount((prev) => Math.max(0, prev - 1));
       } else {
         // Like
         await likeMutation.mutateAsync(contentId);
         setIsLiked(true);
-        setLikeCount((prev) => prev + 1);
+        setCurrentLikeCount((prev) => prev + 1);
       }
     } catch (err: any) {
       const errorMessage =
@@ -64,7 +64,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
       // For other errors, show the error and revert the state
       setError(errorMessage);
       setIsLiked(!isLiked);
-      setLikeCount(isLiked ? likeCount + 1 : Math.max(0, likeCount - 1));
+      setCurrentLikeCount(isLiked ? currentLikeCount + 1 : Math.max(0, currentLikeCount - 1));
     }
   };
 
@@ -108,7 +108,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
             />
           </svg>
         )}
-        <span className="text-sm font-medium">{likeCount}</span>
+        <span className="text-sm font-medium">{currentLikeCount}</span>
       </button>
 
       {error && (

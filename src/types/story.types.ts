@@ -34,6 +34,8 @@ export interface Story {
   published_at?: string;
   created_at: string;
   updated_at: string;
+  likeCount?: number;
+  userHasLiked?: boolean | null;
   author?: User;
   episodes?: Episode[];
   _count?: {
