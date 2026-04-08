@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PageWrapper } from "../components/layout/PageWrapper";
 import { Spinner } from "../components/common/Spinner";
 import { Badge } from "../components/common/Badge";
 import { Button } from "../components/common/Button";
 import { ErrorMessage } from "../components/common/ErrorMessage";
+import { CommentSection } from "../components/reactions/CommentSection";
+import { LikeButton } from "../components/reactions/LikeButton";
 import { useEpisode } from "../hooks/useEpisodes";
 import { useAuth } from "../hooks/useAuth";
+import { useComments } from "../hooks/useComments";
+import type { Comment } from "../types/comment.types";
 import { formatDate } from "../utils/formatDate";
 import { formatReadTime } from "../utils/formatReadTime";
 
@@ -15,6 +19,32 @@ export const EpisodeDetail: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: episodeData, isLoading, error } = useEpisode(episodeId || "");
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+
+  // Hooks must be called at top level, before any conditional returns
+  const {
+    data: commentsResponse,
+    isLoading: isLoadingComments,
+    refetch: refetchComments,
+  } = useComments(
+    episodeData?.data?.id || "",
+    "episode",
+    currentCommentPage,
+    10,
+  );
+
+  // Extract comments and pagination info
+  const comments: Comment[] = [];
+  let totalComments = 0;
+  if (commentsResponse?.data) {
+    if (Array.isArray(commentsResponse.data)) {
+      comments.push(...commentsResponse.data);
+      totalComments = commentsResponse.data.length;
+    } else if ("comments" in commentsResponse.data) {
+      comments.push(...commentsResponse.data.comments);
+      totalComments = commentsResponse.data.total || 0;
+    }
+  }
 
   if (!episodeId) {
     return (
@@ -177,7 +207,29 @@ export const EpisodeDetail: React.FC = () => {
           )}
         </div>
 
-        {/* TODO: Add reactions (LikeButton, CommentSection) */}
+        {/* Reactions Section */}
+        <div className="max-w-4xl mx-auto">
+          {/* Like Button */}
+          <div className="py-6 border-t border-gray-300 dark:border-gray-600">
+            <LikeButton
+              contentId={episode.id}
+              contentType="episode"
+              initialCount={episode._count?.likes || 0}
+            />
+          </div>
+
+          {/* Comments Section */}
+          <CommentSection
+            contentId={episode.id}
+            contentType="episode"
+            comments={comments}
+            isLoadingComments={isLoadingComments}
+            totalComments={totalComments}
+            currentPage={currentCommentPage}
+            onPageChange={setCurrentCommentPage}
+            onCommentAdded={refetchComments}
+          />
+        </div>
       </div>
     </PageWrapper>
   );

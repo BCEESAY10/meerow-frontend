@@ -5,8 +5,12 @@ import { Spinner } from "../components/common/Spinner";
 import { Badge } from "../components/common/Badge";
 import { Button } from "../components/common/Button";
 import { ErrorMessage } from "../components/common/ErrorMessage";
+import { CommentSection } from "../components/reactions/CommentSection";
+import { LikeButton } from "../components/reactions/LikeButton";
 import { useStoryBySlug } from "../hooks/useStories";
 import { useAuth } from "../hooks/useAuth";
+import { useComments } from "../hooks/useComments";
+import type { Comment } from "../types/comment.types";
 import { formatRelativeTime } from "../utils/formatDate";
 import { formatReadTime } from "../utils/formatReadTime";
 
@@ -18,6 +22,27 @@ export const StoryDetail: React.FC = () => {
   const [expandedEpisodes, setExpandedEpisodes] = useState<Set<number>>(
     new Set(),
   );
+  const [currentCommentPage, setCurrentCommentPage] = useState(1);
+
+  // Hooks must be called at top level, before any conditional returns
+  const {
+    data: commentsResponse,
+    isLoading: isLoadingComments,
+    refetch: refetchComments,
+  } = useComments(storyData?.data?.id || "", "story", currentCommentPage, 10);
+
+  // Extract comments and pagination info
+  const comments: Comment[] = [];
+  let totalComments = 0;
+  if (commentsResponse?.data) {
+    if (Array.isArray(commentsResponse.data)) {
+      comments.push(...commentsResponse.data);
+      totalComments = commentsResponse.data.length;
+    } else if ("comments" in commentsResponse.data) {
+      comments.push(...commentsResponse.data.comments);
+      totalComments = commentsResponse.data.total || 0;
+    }
+  }
 
   if (isLoading) {
     return (
@@ -253,7 +278,29 @@ export const StoryDetail: React.FC = () => {
           )}
         </div>
 
-        {/* TODO: Add reactions (LikeButton, CommentSection) */}
+        {/* Reactions Section */}
+        <div className="max-w-4xl mx-auto">
+          {/* Like Button */}
+          <div className="py-6 border-t border-gray-300 dark:border-gray-600">
+            <LikeButton
+              contentId={story.id}
+              contentType="story"
+              initialCount={story._count?.likes || 0}
+            />
+          </div>
+
+          {/* Comments Section */}
+          <CommentSection
+            contentId={story.id}
+            contentType="story"
+            comments={comments}
+            isLoadingComments={isLoadingComments}
+            totalComments={totalComments}
+            currentPage={currentCommentPage}
+            onPageChange={setCurrentCommentPage}
+            onCommentAdded={refetchComments}
+          />
+        </div>
       </div>
     </PageWrapper>
   );
