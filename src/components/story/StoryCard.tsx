@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { Story } from "../../types/story.types";
 import { Badge } from "../common/Badge";
 import { formatRelativeTime } from "../../utils/formatDate";
+import { formatReadTime } from "../../utils/formatReadTime";
 
 // Helper function to format story date
 const getStoryDateText = (story: Story): string => {
@@ -60,9 +61,15 @@ export const StoryCard: React.FC<StoryCardProps> = ({ story }) => {
             <p className="text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE]">
               {story.author.name}
             </p>
-            <p className="text-xs text-[#6B6B7D] dark:text-[#B8B8C8]">
-              {getStoryDateText(story)}
-            </p>
+            <div className="flex items-center gap-2 text-xs text-[#6B6B7D] dark:text-[#B8B8C8]">
+              {story.read_time_minutes && (
+                <>
+                  <span>{formatReadTime(story.read_time_minutes)}</span>
+                  <span>•</span>
+                </>
+              )}
+              <span>{getStoryDateText(story)}</span>
+            </div>
           </div>
         </div>
       )}

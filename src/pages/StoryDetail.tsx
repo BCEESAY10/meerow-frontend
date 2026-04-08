@@ -127,6 +127,14 @@ export const StoryDetail: React.FC = () => {
 
             {/* Stats */}
             <div className="flex gap-6 text-sm mb-6">
+              {story.read_time_minutes && (
+                <>
+                  <span className="text-[#6B6B7D] dark:text-[#B8B8C8]">
+                    {formatReadTime(story.read_time_minutes)}
+                  </span>
+                  <span className="text-gray-300 dark:text-gray-600">•</span>
+                </>
+              )}
               {story._count && (
                 <>
                   <span className="text-[#6B6B7D] dark:text-[#B8B8C8]">
