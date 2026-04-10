@@ -44,8 +44,9 @@ export const WriteEpisode: React.FC = () => {
 
   // Auto-increment episode number based on existing episodes
   useEffect(() => {
-    if (storyData?.data?.episodes) {
-      const nextEpisodeNumber = storyData.data.episodes.length + 1;
+    if (storyData?.data) {
+      const episodeCount = storyData.data.episodes?.length || 0;
+      const nextEpisodeNumber = episodeCount + 1;
       setValue("episode_number", nextEpisodeNumber);
     }
   }, [storyData, setValue]);
@@ -134,10 +135,14 @@ export const WriteEpisode: React.FC = () => {
             ← Back to {story.title}
           </button>
           <h1 className="text-4xl font-bold text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
-            Add New Episode
+            {story.episodes && story.episodes.length === 0
+              ? "Create First Episode"
+              : "Add New Episode"}
           </h1>
           <p className="text-[#6B6B7D] dark:text-[#B8B8C8]">
-            Add the next chapter to your series
+            {story.episodes && story.episodes.length === 0
+              ? "Start your episodic series by writing the first chapter"
+              : "Add the next chapter to your series"}
           </p>
         </div>
 
