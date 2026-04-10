@@ -9,7 +9,9 @@ import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { ErrorMessage } from "../components/common/ErrorMessage";
 import { Spinner } from "../components/common/Spinner";
+import { ConfirmDrawer } from "../components/modals/ConfirmDrawer";
 import { useStoryBySlug, useUpdateStory } from "../hooks/useStories";
+import { useEpisodes, useDeleteEpisode } from "../hooks/useEpisodes";
 import { useAuth } from "../hooks/useAuth";
 import { GENRES, GENRE_LIST } from "../utils/constants";
 import type { Genre } from "../types/story.types";
@@ -32,10 +34,15 @@ export const EditStory: React.FC = () => {
   const { data: storyData, isLoading: isLoadingStory } = useStoryBySlug(
     storyId || "",
   );
+  const { data: episodesData, isLoading: isLoadingEpisodes } =
+    useEpisodes(storyId);
   const updateStoryMutation = useUpdateStory();
+  const deleteEpisodeMutation = useDeleteEpisode(storyId || "");
 
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [episodeToDelete, setEpisodeToDelete] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const {
     register,
@@ -100,6 +107,20 @@ export const EditStory: React.FC = () => {
         error.message ||
         "Failed to update story";
       setServerError(errorMessage);
+    }
+  };
+
+  const handleDeleteEpisode = async (episodeId: string) => {
+    setDeleteError(null);
+    try {
+      await deleteEpisodeMutation.mutateAsync(episodeId);
+      setEpisodeToDelete(null);
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to delete episode";
+      setDeleteError(errorMsg);
     }
   };
 
@@ -251,12 +272,90 @@ export const EditStory: React.FC = () => {
           )}
 
           {!canEditContent && (
-            <div className="p-4 bg-[#FDF6EE] dark:bg-[#2A2A3E] border border-[#E8622A]/20 dark:border-[#F07A3D]/20 rounded-lg">
+            <div className="p-4 bg-[#FDF6EE] dark:bg-[#2A2A3E] border border-[#E8622A]/20 dark:border-[#F07A3D]/20 rounded-lg mb-6">
               <p className="text-[#1E1E2E] dark:text-[#FDF6EE] text-sm">
-                <strong>Episodic series:</strong> Edit episode content from your
-                dashboard. You can only edit the series title, synopsis, and
-                genre here.
+                <strong>Episodic series:</strong> You can only edit the series
+                title, synopsis, and genre here. Edit episode content below.
               </p>
+            </div>
+          )}
+
+          {!canEditContent && episodesData?.data && (
+            <div>
+              <h2 className="text-2xl font-bold text-[#1E1E2E] dark:text-[#FDF6EE] mb-4">
+                Episodes
+              </h2>
+
+              {deleteError && (
+                <div className="mb-4">
+                  <ErrorMessage
+                    message={deleteError}
+                    onDismiss={() => setDeleteError(null)}
+                  />
+                </div>
+              )}
+
+              {isLoadingEpisodes ? (
+                <div className="flex justify-center py-8">
+                  <Spinner />
+                </div>
+              ) : episodesData.data.length === 0 ? (
+                <div className="text-center py-8 bg-gray-50 dark:bg-[#2A2A3E] rounded-lg">
+                  <p className="text-[#6B6B7D] dark:text-[#B8B8C8]">
+                    No episodes yet
+                  </p>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => navigate(`/story/${storyId}/write-episode`)}
+                    className="mt-4">
+                    + Add First Episode
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {episodesData.data.map((episode) => (
+                    <div
+                      key={episode.id}
+                      className="flex items-center justify-between p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-[#2A2A3E] hover:bg-gray-50 dark:hover:bg-[#3A3A4E] transition">
+                      <div className="flex-1">
+                        <h3 className="font-medium text-[#1E1E2E] dark:text-[#FDF6EE]">
+                          Episode {episode.episode_number}: {episode.title}
+                        </h3>
+                        <p className="text-xs text-[#6B6B7D] dark:text-[#B8B8C8] mt-1">
+                          {episode.content
+                            ? `${episode.content.split(" ").length} words`
+                            : "No content"}
+                        </p>
+                      </div>
+                      <div className="flex gap-2 ml-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            navigate(
+                              `/story/${storyId}/episode/${episode.id}/edit`,
+                            )
+                          }>
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEpisodeToDelete(episode.id)}>
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  <Button
+                    variant="secondary"
+                    onClick={() => navigate(`/story/${storyId}/write-episode`)}
+                    className="w-full mt-4">
+                    + Add Episode
+                  </Button>
+                </div>
+              )}
             </div>
           )}
 
@@ -282,6 +381,21 @@ export const EditStory: React.FC = () => {
             </Button>
           </div>
         </form>
+
+        {/* Delete Episode Confirmation */}
+        {episodeToDelete && (
+          <ConfirmDrawer
+            isOpen={!!episodeToDelete}
+            title="Delete Episode"
+            description="Are you sure you want to delete this episode? This action cannot be undone."
+            confirmText="Delete"
+            cancelText="Cancel"
+            isLoading={deleteEpisodeMutation.isPending}
+            variant="danger"
+            onConfirm={() => handleDeleteEpisode(episodeToDelete)}
+            onCancel={() => setEpisodeToDelete(null)}
+          />
+        )}
       </div>
     </PageWrapper>
   );
