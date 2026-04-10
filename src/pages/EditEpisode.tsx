@@ -131,9 +131,9 @@ export const EditEpisode: React.FC = () => {
           `Episode ${response.data.episode_number} has been updated successfully!`,
         );
 
-        // Navigate back to episode after 2 seconds
+        // Navigate back to episode with storyId after 2 seconds
         setTimeout(() => {
-          navigate(`/episode/${episode.id}`);
+          navigate(`/story/${storyId}/episode/${episode.id}`);
         }, 2000);
       }
     } catch (error: any) {
