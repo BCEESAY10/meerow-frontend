@@ -33,6 +33,10 @@ export const AppRoutes: React.FC = () => {
 
         {/* Story Routes */}
         <Route path="/story/:slug" element={<StoryDetail />} />
+        <Route
+          path="/story/:storyId/episode/:episodeId"
+          element={<EpisodeDetail />}
+        />
         <Route path="/episode/:episodeId" element={<EpisodeDetail />} />
 
         {/* Protected Routes */}
