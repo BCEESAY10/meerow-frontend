@@ -59,13 +59,20 @@ export const WriteStory: React.FC = () => {
 
       if (response.data) {
         setSuccessMessage(
-          `"${response.data.title}" has been submitted for review! It will appear in the feed once approved by our admin team.`,
+          `"${response.data.title}" has been ${data.is_episodic ? "created" : "submitted for review"}!`,
         );
 
-        // Navigate to dashboard after 3 seconds
-        setTimeout(() => {
-          navigate("/author-dashboard");
-        }, 3000);
+        // For episodic stories, redirect to add first episode
+        if (data.is_episodic) {
+          setTimeout(() => {
+            navigate(`/story/${response.data.id}/write-episode`);
+          }, 1500);
+        } else {
+          // For standalone stories, redirect to dashboard
+          setTimeout(() => {
+            navigate("/author-dashboard");
+          }, 2000);
+        }
       }
     } catch (error: any) {
       const errorMessage =
