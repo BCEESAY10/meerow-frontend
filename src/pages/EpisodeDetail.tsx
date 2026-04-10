@@ -15,10 +15,17 @@ import { formatDate } from "../utils/formatDate";
 import { formatReadTime } from "../utils/formatReadTime";
 
 export const EpisodeDetail: React.FC = () => {
-  const { episodeId } = useParams<{ episodeId: string }>();
+  const { episodeId, storyId } = useParams<{
+    episodeId: string;
+    storyId?: string;
+  }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: episodeData, isLoading, error } = useEpisode(episodeId || "");
+  const {
+    data: episodeData,
+    isLoading,
+    error,
+  } = useEpisode(storyId || "", episodeId || "");
   const [currentCommentPage, setCurrentCommentPage] = useState(1);
 
   // Hooks must be called at top level, before any conditional returns
