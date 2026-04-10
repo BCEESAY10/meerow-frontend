@@ -181,7 +181,9 @@ export const AuthorDashboard: React.FC = () => {
                         {getStatusBadge(story.status)}
                       </td>
                       <td className="px-6 py-4 text-sm text-[#6B6B7D] dark:text-[#B8B8C8]">
-                        {story.published_at ? formatRelativeTime(story.published_at) : "—"}
+                        {story.published_at
+                          ? formatRelativeTime(story.published_at)
+                          : "—"}
                       </td>
                       <td className="px-6 py-4 text-sm text-right">
                         <div className="flex gap-2 justify-end">
