@@ -8,6 +8,7 @@ import { PageWrapper } from "../components/layout/PageWrapper";
 import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { ErrorMessage } from "../components/common/ErrorMessage";
+import { RichTextEditor } from "../components/common/RichTextEditor";
 import { useCreateStory } from "../hooks/useStories";
 import { GENRES, GENRE_LIST } from "../utils/constants";
 import type { Genre } from "../types/story.types";
@@ -27,6 +28,7 @@ export const WriteStory: React.FC = () => {
   const createStoryMutation = useCreateStory();
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [content, setContent] = useState<string>("");
 
   const {
     register,
@@ -52,8 +54,24 @@ export const WriteStory: React.FC = () => {
         synopsis: data.synopsis,
         genre: data.genre as Genre,
         is_episodic: data.is_episodic,
-        ...(data.is_episodic ? {} : { content: data.content }),
+        ...(data.is_episodic
+          ? {}
+          : {
+              content:
+                content.replace(/<[^>]*>/g, "").trim().length < 50
+                  ? ""
+                  : content,
+            }),
       };
+
+      // Validate content for non-episodic stories
+      if (
+        !data.is_episodic &&
+        (!content || content.replace(/<[^>]*>/g, "").trim().length < 50)
+      ) {
+        setServerError("Story content must be at least 50 characters");
+        return;
+      }
 
       const response = await createStoryMutation.mutateAsync(createPayload);
 
@@ -182,25 +200,13 @@ export const WriteStory: React.FC = () => {
 
           {/* Full Content (only for non-episodic) */}
           {!episodicValue && (
-            <div>
-              <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
-                Story Content
-              </label>
-              <textarea
-                {...register("content")}
-                placeholder="Write your complete story here..."
-                rows={10}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#2A2A3E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E8622A] dark:focus:ring-[#F07A3D] focus:border-transparent transition duration-200"
-              />
-              {errors.content && (
-                <p className="text-red-600 dark:text-red-400 text-sm mt-1">
-                  {errors.content.message}
-                </p>
-              )}
-              <p className="text-[#6B6B7D] dark:text-[#B8B8C8] text-sm mt-2">
-                Minimum 50 words required for read time calculation
-              </p>
-            </div>
+            <RichTextEditor
+              value={content}
+              onChange={setContent}
+              label="Story Content"
+              placeholder="Write your complete story here..."
+              minHeight="400px"
+            />
           )}
 
           {episodicValue && (
