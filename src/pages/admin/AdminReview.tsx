@@ -36,6 +36,7 @@ export const AdminReview: React.FC = () => {
   const [editTitle, setEditTitle] = useState("");
   const [editSynopsis, setEditSynopsis] = useState("");
   const [editContent, setEditContent] = useState("");
+  const [editGenre, setEditGenre] = useState("");
   const [editError, setEditError] = useState<string | null>(null);
 
   const queueItem = data?.data;
@@ -46,6 +47,7 @@ export const AdminReview: React.FC = () => {
       setEditTitle(queueItem.title);
       setEditSynopsis((queueItem as any).synopsis || "");
       setEditContent(queueItem.content);
+      setEditGenre((queueItem as any).genre || "");
     }
   }, [queueItem, isEditing]);
 
@@ -67,6 +69,7 @@ export const AdminReview: React.FC = () => {
       setEditTitle(queueItem.title);
       setEditSynopsis((queueItem as any).synopsis || "");
       setEditContent(queueItem.content);
+      setEditGenre((queueItem as any).genre || "");
     }
   };
 
@@ -99,6 +102,10 @@ export const AdminReview: React.FC = () => {
 
       if (editSynopsis) {
         updates.synopsis = editSynopsis.trim();
+      }
+
+      if (type === "story" && editGenre) {
+        updates.genre = editGenre.trim();
       }
 
       await updateContent.mutateAsync({
@@ -326,6 +333,17 @@ export const AdminReview: React.FC = () => {
                     placeholder="Enter title"
                     error={editError?.includes("Title") ? editError : undefined}
                   />
+
+                  {/* Genre (if story) */}
+                  {type === "story" && (
+                    <Input
+                      label="Genre"
+                      type="text"
+                      value={editGenre}
+                      onChange={(e) => setEditGenre(e.target.value)}
+                      placeholder="e.g., Fantasy, Romance, Mystery"
+                    />
+                  )}
 
                   {/* Synopsis (if story) */}
                   {type === "story" && (
