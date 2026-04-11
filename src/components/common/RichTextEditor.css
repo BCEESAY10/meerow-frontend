@@ -1,0 +1,121 @@
+/* Dark theme overrides for Quill editor */
+.rich-text-editor {
+  background-color: #2a2a3e !important;
+  color: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-toolbar {
+  background-color: #1e1e2e !important;
+  border-bottom: 1px solid #4a4a5e !important;
+}
+
+.rich-text-editor .ql-container {
+  background-color: #2a2a3e !important;
+  border: none !important;
+  font-size: 1rem;
+}
+
+.rich-text-editor .ql-editor {
+  color: #fdf6ee !important;
+  min-height: 300px;
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+  color: #6b6b7d !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow .ql-picker-label {
+  color: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow button:hover,
+.rich-text-editor .ql-toolbar.ql-snow button.ql-active,
+.rich-text-editor .ql-toolbar.ql-snow button:focus,
+.rich-text-editor .ql-toolbar.ql-snow button:active {
+  color: #e8622a !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow button {
+  color: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow .ql-stroke {
+  stroke: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow .ql-fill,
+.rich-text-editor .ql-toolbar.ql-snow .ql-stroke.ql-fill {
+  fill: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow button.ql-active .ql-stroke,
+.rich-text-editor .ql-toolbar.ql-snow button:hover .ql-stroke {
+  stroke: #e8622a !important;
+}
+
+.rich-text-editor .ql-toolbar.ql-snow button.ql-active .ql-fill,
+.rich-text-editor .ql-toolbar.ql-snow button:hover .ql-fill,
+.rich-text-editor .ql-toolbar.ql-snow button.ql-active .ql-stroke.ql-fill,
+.rich-text-editor .ql-toolbar.ql-snow button:hover .ql-stroke.ql-fill {
+  fill: #e8622a !important;
+}
+
+.rich-text-editor .ql-picker {
+  color: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-picker-options {
+  background-color: #2a2a3e !important;
+}
+
+.rich-text-editor .ql-picker-item {
+  color: #fdf6ee !important;
+}
+
+.rich-text-editor .ql-picker-item:hover,
+.rich-text-editor .ql-picker-item.ql-selected {
+  color: #e8622a !important;
+}
+
+/* Light theme (default) */
+@media (prefers-color-scheme: light) {
+  .rich-text-editor {
+    background-color: #ffffff !important;
+    color: #1e1e2e !important;
+  }
+
+  .rich-text-editor .ql-toolbar {
+    background-color: #f5f5f5 !important;
+    border-bottom: 1px solid #d0d0d0 !important;
+  }
+
+  .rich-text-editor .ql-container {
+    background-color: #ffffff !important;
+  }
+
+  .rich-text-editor .ql-editor {
+    color: #1e1e2e !important;
+  }
+
+  .rich-text-editor .ql-editor.ql-blank::before {
+    color: #a0a0b0 !important;
+  }
+
+  .rich-text-editor .ql-toolbar.ql-snow button {
+    color: #1e1e2e !important;
+  }
+
+  .rich-text-editor .ql-toolbar.ql-snow .ql-stroke {
+    stroke: #1e1e2e !important;
+  }
+
+  .rich-text-editor .ql-toolbar.ql-snow .ql-fill,
+  .rich-text-editor .ql-toolbar.ql-snow .ql-stroke.ql-fill {
+    fill: #1e1e2e !important;
+  }
+
+  .rich-text-editor .ql-toolbar.ql-snow button:hover .ql-stroke,
+  .rich-text-editor .ql-toolbar.ql-snow button.ql-active .ql-stroke {
+    stroke: #e8622a !important;
+  }
+}
