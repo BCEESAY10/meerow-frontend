@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,13 +10,13 @@ import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { ErrorMessage } from "../components/common/ErrorMessage";
 import { Spinner } from "../components/common/Spinner";
+import { RichTextEditor } from "../components/common/RichTextEditor";
 import { useStoryBySlug } from "../hooks/useStories";
 import { useEpisode, useUpdateEpisode } from "../hooks/useEpisodes";
 import { useAuth } from "../hooks/useAuth";
 
 const episodeSchema = z.object({
   title: z.string().min(3, "Episode title must be at least 3 characters"),
-  content: z.string().min(50, "Content must be at least 50 characters"),
 });
 
 type EpisodeFormData = z.infer<typeof episodeSchema>;
@@ -45,6 +46,7 @@ export const EditEpisode: React.FC = () => {
   );
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [content, setContent] = useState<string>("");
 
   const {
     register,
@@ -60,7 +62,7 @@ export const EditEpisode: React.FC = () => {
     if (episodeData?.data) {
       const episode = episodeData.data;
       setValue("title", episode.title);
-      setValue("content", episode.content || "");
+      setContent(episode.content || "");
     }
   }, [episodeData, setValue]);
 
@@ -120,10 +122,16 @@ export const EditEpisode: React.FC = () => {
     setServerError(null);
     setSuccessMessage(null);
 
+    // Validate content
+    if (!content || content.replace(/<[^>]*>/g, "").trim().length < 50) {
+      setServerError("Episode content must be at least 50 characters");
+      return;
+    }
+
     try {
       const response = await updateEpisodeMutation.mutateAsync({
         title: data.title,
-        content: data.content,
+        content: content,
       });
 
       if (response.data) {
@@ -193,25 +201,13 @@ export const EditEpisode: React.FC = () => {
           />
 
           {/* Episode Content */}
-          <div>
-            <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
-              Content
-            </label>
-            <textarea
-              {...register("content")}
-              placeholder="Write your episode content here..."
-              rows={15}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#2A2A3E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E8622A] dark:focus:ring-[#F07A3D] focus:border-transparent transition duration-200"
-            />
-            {errors.content && (
-              <p className="text-red-600 dark:text-red-400 text-sm mt-1">
-                {errors.content.message}
-              </p>
-            )}
-            <p className="text-[#6B6B7D] dark:text-[#B8B8C8] text-sm mt-2">
-              Minimum 50 characters required
-            </p>
-          </div>
+          <RichTextEditor
+            value={content}
+            onChange={setContent}
+            label="Content"
+            placeholder="Write your episode content here..."
+            minHeight="350px"
+          />
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-6">
