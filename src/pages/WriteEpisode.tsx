@@ -9,6 +9,7 @@ import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { ErrorMessage } from "../components/common/ErrorMessage";
 import { Spinner } from "../components/common/Spinner";
+import { RichTextEditor } from "../components/common/RichTextEditor";
 import { useStoryBySlug } from "../hooks/useStories";
 import { useCreateEpisode } from "../hooks/useEpisodes";
 
@@ -29,6 +30,7 @@ export const WriteEpisode: React.FC = () => {
   const createEpisodeMutation = useCreateEpisode(storyId || "");
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [content, setContent] = useState<string>("");
 
   const {
     register,
@@ -99,11 +101,17 @@ export const WriteEpisode: React.FC = () => {
     setServerError(null);
     setSuccessMessage(null);
 
+    // Validate content
+    if (!content || content.replace(/<[^>]*>/g, "").trim().length < 50) {
+      setServerError("Episode content must be at least 50 characters");
+      return;
+    }
+
     try {
       const response = await createEpisodeMutation.mutateAsync({
         title: data.title,
         episode_number: data.episode_number,
-        content: data.content,
+        content: content,
       });
 
       if (response.data) {
@@ -186,25 +194,13 @@ export const WriteEpisode: React.FC = () => {
           />
 
           {/* Content */}
-          <div>
-            <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
-              Episode Content
-            </label>
-            <textarea
-              {...register("content")}
-              placeholder="Write your episode content here..."
-              rows={12}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#2A2A3E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E8622A] dark:focus:ring-[#F07A3D] focus:border-transparent transition duration-200"
-            />
-            {errors.content && (
-              <p className="text-red-600 dark:text-red-400 text-sm mt-1">
-                {errors.content.message}
-              </p>
-            )}
-            <p className="text-[#6B6B7D] dark:text-[#B8B8C8] text-sm mt-2">
-              Minimum 50 words required for read time calculation
-            </p>
-          </div>
+          <RichTextEditor
+            value={content}
+            onChange={setContent}
+            label="Episode Content"
+            placeholder="Write your episode content here..."
+            minHeight="350px"
+          />
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-6">
