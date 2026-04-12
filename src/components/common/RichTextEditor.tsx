@@ -1,6 +1,6 @@
-import React from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import React, { useEffect, useRef } from "react";
+import Quill from "quill";
+import "quill/dist/quill.snow.css";
 import "./RichTextEditor.css";
 
 interface RichTextEditorProps {
@@ -20,26 +20,59 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   label,
   minHeight = "300px",
 }) => {
-  const modules = {
-    toolbar: [
-      ["bold", "italic", "underline", "strike"],
-      ["blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link"],
-      ["clean"],
-    ],
-  };
+  const editorRef = useRef<HTMLDivElement>(null);
+  const quillRef = useRef<Quill | null>(null);
+  const isUpdatingRef = useRef(false);
 
-  const formats = [
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "list",
-    "bullet",
-    "link",
-  ];
+  useEffect(() => {
+    if (!editorRef.current || quillRef.current) return;
+
+    // Initialize Quill
+    quillRef.current = new Quill(editorRef.current, {
+      theme: "snow",
+      placeholder,
+      modules: {
+        toolbar: [
+          ["bold", "italic", "underline", "strike"],
+          ["blockquote"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          ["link"],
+          ["clean"],
+        ],
+      },
+    });
+
+    // Set initial content
+    if (value) {
+      isUpdatingRef.current = true;
+      quillRef.current.root.innerHTML = value;
+      isUpdatingRef.current = false;
+    }
+
+    // Handle text changes
+    quillRef.current.on("text-change", () => {
+      if (!isUpdatingRef.current && quillRef.current) {
+        const html = quillRef.current.root.innerHTML;
+        onChange(html);
+      }
+    });
+
+    return () => {
+      quillRef.current = null;
+    };
+  }, []);
+
+  // Update Quill content when value prop changes
+  useEffect(() => {
+    if (quillRef.current && !isUpdatingRef.current) {
+      const currentHtml = quillRef.current.root.innerHTML;
+      if (value !== currentHtml) {
+        isUpdatingRef.current = true;
+        quillRef.current.root.innerHTML = value;
+        isUpdatingRef.current = false;
+      }
+    }
+  }, [value]);
 
   return (
     <div>
@@ -49,16 +82,18 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </label>
       )}
       <div
-        className="rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden"
+        className={`rounded-lg border ${
+          error
+            ? "border-red-500 dark:border-red-500"
+            : "border-gray-300 dark:border-gray-600"
+        } overflow-hidden`}
         style={{ minHeight }}>
-        <ReactQuill
-          value={value}
-          onChange={onChange}
-          modules={modules}
-          formats={formats}
-          placeholder={placeholder}
-          theme="snow"
-          className="rich-text-editor"
+        <div
+          ref={editorRef}
+          style={{
+            backgroundColor: "white",
+          }}
+          className="rich-text-editor dark:bg-[#1E1E2E]"
         />
       </div>
       {error && (
