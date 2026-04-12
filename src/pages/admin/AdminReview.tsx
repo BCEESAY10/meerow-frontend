@@ -13,6 +13,7 @@ import { Input } from "../../components/common/Input";
 import { PageWrapper } from "../../components/layout/PageWrapper";
 import { Badge } from "../../components/common/Badge";
 import { ErrorMessage } from "../../components/common/ErrorMessage";
+import { RichTextEditor } from "../../components/common/RichTextEditor";
 import { formatDate } from "../../utils/formatDate";
 
 const MAX_REJECTION_LENGTH = 1000;
@@ -57,6 +58,12 @@ export const AdminReview: React.FC = () => {
   }, [initializeEditFields]);
 
   const handleEdit = () => {
+    if (queueItem) {
+      setEditTitle(queueItem.title);
+      setEditSynopsis((queueItem as any).synopsis || "");
+      setEditContent(queueItem.content);
+      setEditGenre((queueItem as any).genre || "");
+    }
     setIsEditing(true);
     setEditError(null);
   };
@@ -87,7 +94,10 @@ export const AdminReview: React.FC = () => {
       return;
     }
 
-    if (!editContent.trim()) {
+    if (
+      !editContent.trim() ||
+      editContent.replace(/<[^>]*>/g, "").trim().length === 0
+    ) {
       setEditError("Content is required");
       return;
     }
@@ -362,18 +372,13 @@ export const AdminReview: React.FC = () => {
                   )}
 
                   {/* Content */}
-                  <div>
-                    <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
-                      Content
-                    </label>
-                    <textarea
-                      value={editContent}
-                      onChange={(e) => setEditContent(e.target.value)}
-                      placeholder="Story content"
-                      rows={8}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#1E1E2E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                    />
-                  </div>
+                  <RichTextEditor
+                    value={editContent}
+                    onChange={setEditContent}
+                    label="Content"
+                    placeholder="Story content"
+                    minHeight="300px"
+                  />
 
                   {editError && (
                     <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
