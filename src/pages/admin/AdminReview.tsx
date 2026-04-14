@@ -13,7 +13,7 @@ import { Input } from "../../components/common/Input";
 import { PageWrapper } from "../../components/layout/PageWrapper";
 import { Badge } from "../../components/common/Badge";
 import { ErrorMessage } from "../../components/common/ErrorMessage";
-import { RichTextEditor } from "../../components/common/RichTextEditor";
+
 import { formatDate } from "../../utils/formatDate";
 
 const MAX_REJECTION_LENGTH = 1000;
@@ -372,13 +372,18 @@ export const AdminReview: React.FC = () => {
                   )}
 
                   {/* Content */}
-                  <RichTextEditor
-                    value={editContent}
-                    onChange={setEditContent}
-                    label="Content"
-                    placeholder="Story content"
-                    minHeight="300px"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
+                      Content
+                    </label>
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      placeholder="Story content"
+                      rows={10}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#2A2A3E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E8622A] dark:focus:ring-[#F07A3D] focus:border-transparent transition duration-200"
+                    />
+                  </div>
 
                   {editError && (
                     <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
