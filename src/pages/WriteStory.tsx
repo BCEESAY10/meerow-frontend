@@ -8,7 +8,6 @@ import { PageWrapper } from "../components/layout/PageWrapper";
 import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { ErrorMessage } from "../components/common/ErrorMessage";
-import { RichTextEditor } from "../components/common/RichTextEditor";
 import { useCreateStory } from "../hooks/useStories";
 import { GENRES, GENRE_LIST } from "../utils/constants";
 import type { Genre } from "../types/story.types";
@@ -200,13 +199,18 @@ export const WriteStory: React.FC = () => {
 
           {/* Full Content (only for non-episodic) */}
           {!episodicValue && (
-            <RichTextEditor
-              value={content}
-              onChange={setContent}
-              label="Story Content"
-              placeholder="Write your complete story here..."
-              minHeight="400px"
-            />
+            <div>
+              <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
+                Story Content
+              </label>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Write your complete story here..."
+                rows={15}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#2A2A3E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E8622A] dark:focus:ring-[#F07A3D] focus:border-transparent transition duration-200"
+              />
+            </div>
           )}
 
           {episodicValue && (
