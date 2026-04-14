@@ -236,7 +236,7 @@ export const StoryDetail: React.FC = () => {
                       {/* Episode Content */}
                       {expandedEpisodes.has(episode.episode_number) && (
                         <div className="p-6 border-t border-gray-300 dark:border-gray-600 bg-white dark:bg-[#1E1E2E]">
-                          <div className="prose max-w-none text-[#1E1E2E] dark:text-[#FDF6EE] whitespace-pre-wrap mb-6">
+                          <div className="whitespace-pre-wrap text-[#1E1E2E] dark:text-[#FDF6EE] mb-6">
                             {episode.content}
                           </div>
 
@@ -280,10 +280,8 @@ export const StoryDetail: React.FC = () => {
             </div>
           ) : (
             // Full story content for standalone stories
-            <div className="bg-white dark:bg-[#1E1E2E] rounded-lg p-8 prose max-w-none">
-              <div className="text-[#1E1E2E] dark:text-[#FDF6EE] whitespace-pre-wrap leading-relaxed">
-                {story.content}
-              </div>
+            <div className="bg-white dark:bg-[#1E1E2E] rounded-lg p-8 whitespace-pre-wrap text-[#1E1E2E] dark:text-[#FDF6EE]">
+              {story.content}
             </div>
           )}
         </div>
