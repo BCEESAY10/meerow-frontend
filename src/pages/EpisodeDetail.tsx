@@ -164,10 +164,8 @@ export const EpisodeDetail: React.FC = () => {
 
         {/* Content Section */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white dark:bg-[#1E1E2E] rounded-lg p-8 mb-12">
-            <div className="prose max-w-none text-[#1E1E2E] dark:text-[#FDF6EE] whitespace-pre-wrap leading-relaxed text-lg">
-              {episode.content}
-            </div>
+          <div className="bg-white dark:bg-[#1E1E2E] rounded-lg p-8 mb-12 whitespace-pre-wrap text-[#1E1E2E] dark:text-[#FDF6EE]">
+            {episode.content}
           </div>
 
           {/* Episode Navigation */}
