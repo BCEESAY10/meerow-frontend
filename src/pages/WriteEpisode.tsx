@@ -9,7 +9,7 @@ import { Button } from "../components/common/Button";
 import { Input } from "../components/common/Input";
 import { ErrorMessage } from "../components/common/ErrorMessage";
 import { Spinner } from "../components/common/Spinner";
-import { RichTextEditor } from "../components/common/RichTextEditor";
+
 import { useStoryBySlug } from "../hooks/useStories";
 import { useCreateEpisode } from "../hooks/useEpisodes";
 
@@ -194,13 +194,18 @@ export const WriteEpisode: React.FC = () => {
           />
 
           {/* Content */}
-          <RichTextEditor
-            value={content}
-            onChange={setContent}
-            label="Episode Content"
-            placeholder="Write your episode content here..."
-            minHeight="350px"
-          />
+          <div>
+            <label className="block text-sm font-medium text-[#1E1E2E] dark:text-[#FDF6EE] mb-2">
+              Episode Content
+            </label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Write your episode content here..."
+              rows={12}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white dark:bg-[#2A2A3E] text-[#1E1E2E] dark:text-[#FDF6EE] placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#E8622A] dark:focus:ring-[#F07A3D] focus:border-transparent transition duration-200"
+            />
+          </div>
 
           {/* Action Buttons */}
           <div className="flex gap-4 pt-6">
