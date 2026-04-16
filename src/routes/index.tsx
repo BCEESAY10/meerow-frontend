@@ -19,6 +19,11 @@ import { WriteEpisode } from "../pages/WriteEpisode";
 import { EditEpisode } from "../pages/EditEpisode";
 import { StoryDetail } from "../pages/StoryDetail";
 import { EpisodeDetail } from "../pages/EpisodeDetail";
+import { Feedback } from "../pages/Feedback";
+import FAQ from "../pages/FAQ";
+import Privacy from "../pages/Privacy";
+import Terms from "../pages/Terms";
+import Contact from "../pages/Contact";
 import AdminQueue from "../pages/admin/AdminQueue";
 import AdminReview from "../pages/admin/AdminReview";
 
@@ -30,6 +35,11 @@ export const AppRoutes: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/feedback" element={<Feedback />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
 
         {/* Story Routes */}
         <Route path="/story/:slug" element={<StoryDetail />} />
