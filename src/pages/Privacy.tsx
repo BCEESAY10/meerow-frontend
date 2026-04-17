@@ -1,13 +1,22 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { PageWrapper } from "../components/layout/PageWrapper";
 
 export const Privacy: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <PageWrapper>
       <div className="py-12 max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-[#1E1E2E] dark:text-[#FDF6EE] mb-4">
-          Privacy Policy
-        </h1>
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-4 py-2 text-[#E8622A] dark:text-[#F07A3D] hover:text-[#CC5220] dark:hover:text-[#E06A2D] font-medium flex items-center gap-2 transition-colors">
+            ← Back
+          </button>
+          <h1 className="text-4xl font-bold text-[#1E1E2E] dark:text-[#FDF6EE]">
+            Privacy Policy
+          </h1>
+        </div>
         <p className="text-[#6B6B7D] dark:text-[#B8B8C8] mb-8">
           Last updated: {new Date().toLocaleDateString()}
         </p>
