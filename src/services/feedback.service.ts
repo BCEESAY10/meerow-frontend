@@ -1,12 +1,16 @@
 import apiClient from "./api";
-import type { ApiResponse, PaginatedResponse } from "../types/api.types";
+import type { ApiResponse } from "../types/api.types";
 import type { Feedback, CreateFeedbackInput } from "../types/feedback.types";
 
-interface FeedbacksPaginatedResponse {
-  feedbacks: Feedback[];
-  total: number;
+interface FeedbacksMeta {
   page: number;
   limit: number;
+  total: number;
+  totalPages: number;
+}
+
+interface FeedbacksApiResponse extends ApiResponse<Feedback[]> {
+  meta: FeedbacksMeta;
 }
 
 export const feedbackService = {
@@ -16,12 +20,8 @@ export const feedbackService = {
   async getFeedbacks(
     page: number = 1,
     limit: number = 10,
-  ): Promise<
-    PaginatedResponse<Feedback[]> | ApiResponse<FeedbacksPaginatedResponse>
-  > {
-    const response = await apiClient.get<
-      PaginatedResponse<Feedback[]> | ApiResponse<FeedbacksPaginatedResponse>
-    >("/feedbacks", {
+  ): Promise<FeedbacksApiResponse> {
+    const response = await apiClient.get<FeedbacksApiResponse>("/feedbacks", {
       params: { page, limit },
     });
     return response.data;

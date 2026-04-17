@@ -7,7 +7,9 @@ export interface Feedback {
   rating?: number; // 1-5 optional rating
   created_at: string;
   updated_at: string;
-  user?: User; // Author of the feedback
+  createdAt: string;
+  updatedAt: string;
+  author: User; // Author of the feedback with name field
 }
 
 export interface CreateFeedbackInput {

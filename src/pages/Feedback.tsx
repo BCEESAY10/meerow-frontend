@@ -25,13 +25,7 @@ export const Feedback: React.FC = () => {
   const [rating, setRating] = useState<number | undefined>(undefined);
   const [submitError, setSubmitError] = useState("");
 
-  const feedbacks = feedbacksData?.data
-    ? Array.isArray(feedbacksData.data)
-      ? feedbacksData.data
-      : "feedbacks" in feedbacksData.data
-        ? feedbacksData.data.feedbacks
-        : []
-    : [];
+  const feedbacks = feedbacksData?.data || [];
 
   const handleSubmitFeedback = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,7 +203,7 @@ export const Feedback: React.FC = () => {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <p className="font-semibold text-[#1E1E2E] dark:text-[#FDF6EE]">
-                        {entry.user?.name || "Anonymous"}
+                        {entry.author?.name || "Anonymous"}
                       </p>
                       <p className="text-sm text-[#9B9BAC] dark:text-[#7A7A8C]">
                         {formatDate(entry.created_at)}
